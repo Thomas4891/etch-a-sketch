@@ -1,5 +1,4 @@
 function fillScreen(numPixels) {
-    console.time('fillScreen');
     screen.innerHTML = '';
     const pixelWidth = screen.offsetWidth / numPixels;
     const pixelHeight = screen.offsetHeight / numPixels;
@@ -13,8 +12,8 @@ function fillScreen(numPixels) {
         fragment.appendChild(pixel);
     }
     screen.appendChild(fragment);
-    console.timeEnd('fillScreen');
 }
+
 
 const container = document.querySelector('#container');
 const h1 = document.createElement('h1');
@@ -72,16 +71,42 @@ resolution.addEventListener('input', function () {
     fillScreen(numPixels);
 });
 
-// event delegation
 const pixelMouseOver = document.querySelector('.screen');
 pixelMouseOver.addEventListener('mouseover', (e) => {
-    if (e.target.style.backgroundColor === '') {
-        e.target.style.backgroundColor = 'black';
-        console.log(e.target.style.backgroundColor);
-        e.stopPropagation();
+    if (btnLeft.textContent.toLowerCase() === 'black') {
+        fillBlack(e.target);
+    } else if (btnLeft.textContent.toLowerCase() === 'greyscale') {
+        fillGreyscale(e.target);
+    } else if (btnLeft.textContent.toLowerCase() === 'rgb') {
+        fillRgb(e.target);
     }
+    e.stopPropagation();
 });
 
 btnRight.addEventListener('click', (e) => {
     fillScreen(numPixels);
 })
+
+btnLeft.addEventListener('click', (e) => {
+    if (e.target.textContent.toLowerCase() === 'black') {
+      btnLeft.textContent = 'Greyscale';
+    } else if (e.target.textContent.toLowerCase() === 'greyscale') {
+      btnLeft.textContent = 'RGB';
+    } else if (e.target.textContent.toLowerCase() === 'rgb') {
+      btnLeft.textContent = 'Black';
+    } 
+});
+
+function fillGreyscale(target) {
+    const currentColor = target.style.backgroundColor || 'rgb(255, 255, 255)';
+    const rgbValue = parseInt(currentColor.slice(4, 7));
+    const darkenColor = Math.floor(rgbValue - (rgbValue * .1));
+    target.style.backgroundColor =
+        `rgb(${darkenColor}, ${darkenColor}, ${darkenColor})`;
+}
+function fillBlack(target) {
+  target.style.backgroundColor = 'rgb(0, 0, 0)';
+}
+function fillRgb(target) {
+  target.style.backgroundColor = 'rgb(0, 0, 0)';
+}
