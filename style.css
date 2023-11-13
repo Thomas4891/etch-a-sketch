@@ -33,14 +33,14 @@ h1 {
     display: flex;
     width: 800px;
     height: 600px;
-    background-color: whitesmoke;
+    background-color: white;
     flex-wrap: wrap;
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.5);
 }
 
 .pixel {
     box-sizing: border-box;
-    border: 1px solid white;
+    border: none;
 }
 
 .slider {
