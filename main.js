@@ -1,19 +1,37 @@
 function fillScreen(numPixels) {
-    screen.innerHTML = '';
-    const pixelWidth = screen.offsetWidth / numPixels;
-    const pixelHeight = screen.offsetHeight / numPixels;
-    const fragment = document.createDocumentFragment();
-    const pixelTotal = numPixels * numPixels;
-    for (let i = 0; i < pixelTotal; ++i) {
-        const pixel = document.createElement('div');
-        pixel.classList.add('pixel');
-        pixel.style.width =  pixelWidth + 'px';
-        pixel.style.height = pixelHeight + 'px';
-        fragment.appendChild(pixel);
-    }
-    screen.appendChild(fragment);
+  screen.innerHTML = '';
+  const pixelWidth = screen.offsetWidth / numPixels;
+  const pixelHeight = screen.offsetHeight / numPixels;
+  const fragment = document.createDocumentFragment();
+  const pixelTotal = numPixels * numPixels;
+  for (let i = 0; i < pixelTotal; ++i) {
+    const pixel = document.createElement('div');
+    pixel.classList.add('pixel');
+    pixel.style.width = pixelWidth + 'px';
+    pixel.style.height = pixelHeight + 'px';
+    fragment.appendChild(pixel);
+  }
+  screen.appendChild(fragment);
 }
 
+function fillGreyscale(target) {
+  const currentColor = target.style.backgroundColor || 'rgb(255, 255, 255)';
+  const rgbValue = parseInt(currentColor.slice(4, 7));
+  const darkenColor = Math.floor(rgbValue - (rgbValue * .1));
+  target.style.backgroundColor =
+      `rgb(${darkenColor}, ${darkenColor}, ${darkenColor})`;
+}
+
+function fillBlack(target) {
+  target.style.backgroundColor = 'rgb(0, 0, 0)';
+}
+
+function fillRgb(target) {
+  const red = Math.floor(Math.random() * 256);
+  const green = Math.floor(Math.random() * 256);
+  const blue = Math.floor(Math.random() * 256);
+  target.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+}
 
 const container = document.querySelector('#container');
 const h1 = document.createElement('h1');
@@ -43,8 +61,8 @@ resolution.id = 'resolution';
 resolution.type = 'range';
 resolution.name = 'resolution';
 resolution.value = '16';
-resolution.min = '1';
-resolution.max = '50';
+resolution.min = '2';
+resolution.max = '100';
 slider.appendChild(resolution);
 
 const label = document.createElement('label');
@@ -63,50 +81,43 @@ let numPixels = parseInt(resolution.value);
 
 fillScreen(numPixels);
 
-resolution.addEventListener('input', function () {
-    resolution.value = parseInt(resolution.value);
-    label.textContent =
-        `Resolution : ${resolution.value} x ${resolution.value}`;
-    numPixels = parseInt(resolution.value);
-    fillScreen(numPixels);
+resolution.addEventListener('input', function() {
+  resolution.value = parseInt(resolution.value);
+  label.textContent = `Resolution : ${resolution.value} x ${resolution.value}`;
+  numPixels = parseInt(resolution.value);
+  fillScreen(numPixels);
 });
 
 const pixelMouseOver = document.querySelector('.screen');
 pixelMouseOver.addEventListener('mouseover', (e) => {
-    if (btnLeft.textContent.toLowerCase() === 'black') {
-        fillBlack(e.target);
-    } else if (btnLeft.textContent.toLowerCase() === 'greyscale') {
-        fillGreyscale(e.target);
-    } else if (btnLeft.textContent.toLowerCase() === 'rgb') {
-        fillRgb(e.target);
-    }
-    e.stopPropagation();
+  switch (true) {
+    case e.target.classList.value === 'screen':
+      break;
+    case btnLeft.textContent.toLowerCase() === 'black':
+      fillBlack(e.target);
+      break;
+    case btnLeft.textContent.toLowerCase() === 'greyscale':
+      fillGreyscale(e.target);
+      break;
+    case btnLeft.textContent.toLowerCase() === 'rgb':
+      fillRgb(e.target);
+      break;
+    default:
+      console.log('pixelMouseOver ERROR');
+  }
+  e.stopPropagation();
 });
 
 btnRight.addEventListener('click', (e) => {
-    fillScreen(numPixels);
+  fillScreen(numPixels);
 })
 
 btnLeft.addEventListener('click', (e) => {
-    if (e.target.textContent.toLowerCase() === 'black') {
-      btnLeft.textContent = 'Greyscale';
-    } else if (e.target.textContent.toLowerCase() === 'greyscale') {
-      btnLeft.textContent = 'RGB';
-    } else if (e.target.textContent.toLowerCase() === 'rgb') {
-      btnLeft.textContent = 'Black';
-    } 
+  if (e.target.textContent.toLowerCase() === 'black') {
+    btnLeft.textContent = 'Greyscale';
+  } else if (e.target.textContent.toLowerCase() === 'greyscale') {
+    btnLeft.textContent = 'RGB';
+  } else if (e.target.textContent.toLowerCase() === 'rgb') {
+    btnLeft.textContent = 'Black';
+  }
 });
-
-function fillGreyscale(target) {
-    const currentColor = target.style.backgroundColor || 'rgb(255, 255, 255)';
-    const rgbValue = parseInt(currentColor.slice(4, 7));
-    const darkenColor = Math.floor(rgbValue - (rgbValue * .1));
-    target.style.backgroundColor =
-        `rgb(${darkenColor}, ${darkenColor}, ${darkenColor})`;
-}
-function fillBlack(target) {
-  target.style.backgroundColor = 'rgb(0, 0, 0)';
-}
-function fillRgb(target) {
-  target.style.backgroundColor = 'rgb(0, 0, 0)';
-}
